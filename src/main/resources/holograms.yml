@@ -1,0 +1,26 @@
+hologram1:
+  cooldown: 20
+  location: null
+  default: var1
+  refresh: true
+  refreshRate: 20
+  var1:
+    next: var2
+    lines:
+      - '&cHologram #1 &7(&e&lExample&7)'
+      - ''
+      - '&7- &a%player_name%'
+      - ''
+      - '&b&lVar1 &f&lVar2'
+    actions:
+      - '[sound]UI_BUTTON_CLICK,10.0,1.0'
+  var2:
+    next: var1
+    lines:
+      - '&cHologram #2 &7(&e&lExample&7)'
+      - ''
+      - '&7- &c%player_displayname%'
+      - ''
+      - '&f&lVar1 &b&lVar2'
+    actions:
+      - '[sound]UI_BUTTON_CLICK,10.0,1.0'

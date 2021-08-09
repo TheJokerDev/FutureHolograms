@@ -1,0 +1,13 @@
+name: FutureHolograms
+version: ${project.version}
+main: me.TheJokerDev.futureholograms.Main
+api-version: 1.16
+softdepend: [ PlaceholderAPI, HolographicDisplays ]
+authors: [ TheJokerDev ]
+description: Create custom holograms with uniques options.
+website: https://github.com/TheJokerDev
+
+commands:
+  futureholograms:
+    aliases: [fholo, fholograms, futureholo]
+    description: Main command for the plugin.
