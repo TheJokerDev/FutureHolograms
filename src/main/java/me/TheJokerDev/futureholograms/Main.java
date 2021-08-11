@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 
@@ -43,10 +44,6 @@ public final class Main extends JavaPlugin {
         getCommand("futureholograms").setTabCompleter(new FHologramsCmd());
         log(0, "{prefix}&aCommands loaded!");
 
-        log(0, "{prefix}&7Loading holograms...");
-        HologramsManager.initHolograms();
-        log(0, "{prefix}&aHolograms loaded!");
-
         log(0, "{prefix}&7Loading listeners...");
         listeners(new LoginListeners(), new WorldListeners());
         log(0, "{prefix}&aListeners loaded sucessfully!");
@@ -61,6 +58,15 @@ public final class Main extends JavaPlugin {
                 "&a    Made with love, by TheJokerDev &c<3",
                 "&b&l========================================="
         );
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                log(0, "{prefix}&7Loading holograms...");
+                HologramsManager.initHolograms();
+                log(0, "{prefix}&aHolograms loaded!");
+            }
+        }.runTask(this);
     }
 
     public static void listeners(Listener... list){

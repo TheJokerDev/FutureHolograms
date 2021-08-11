@@ -171,6 +171,10 @@ public class FHologram {
         if (location == null){
             return;
         }
+        if (location.getWorld() == null){
+            Main.log(1, "&cCan't spawn a hologram in a null world location!");
+            return;
+        }
         Hologram holo = HologramsAPI.createHologram(Main.getPlugin(), location);
         for (String s : getLines(p)){
             holo.appendTextLine(Utils.ct(PlaceholderAPI.setPlaceholders(p, s)));

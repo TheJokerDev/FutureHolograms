@@ -16,10 +16,10 @@ public class WorldListeners implements Listener {
         World w = e.getPlayer().getWorld();
 
         for (FHologram holo : HologramsManager.getHolograms()){
-            if (holo.getHologram(p).isDeleted()){
+            if (holo.getHologram(p) == null){
                 return;
             }
-            if (holo.getHologram(p) == null){
+            if (holo.getHologram(p).isDeleted()){
                 return;
             }
             if (holo.getLocation().getWorld().getName().equals(w.getName())){

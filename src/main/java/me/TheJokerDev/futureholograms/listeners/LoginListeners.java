@@ -20,6 +20,9 @@ public class LoginListeners implements Listener {
                 continue;
             }
             holo.spawn(p);
+            if (holo.getLocation().getWorld() == null){
+                return;
+            }
             if (holo.getLocation().getWorld().getName().equals(p.getWorld().getName())){
                 holo.showTo(p, p);
             } else{
