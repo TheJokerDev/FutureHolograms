@@ -6,6 +6,7 @@ hologram1:
   refreshRate: 20
   var1:
     next: var2
+    touchLine: bottom
     lines:
       - '&cHologram #1 &7(&e&lExample&7)'
       - ''
@@ -16,6 +17,7 @@ hologram1:
       - '[sound]UI_BUTTON_CLICK,10.0,1.0'
   var2:
     next: var1
+    touchLine: middle
     lines:
       - '&cHologram #2 &7(&e&lExample&7)'
       - ''

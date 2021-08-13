@@ -179,10 +179,8 @@ public class FHologram {
         for (String s : getLines(p)){
             holo.appendTextLine(Utils.ct(PlaceholderAPI.setPlaceholders(p, s)));
         }
-        TouchableLine lastLine = (TouchableLine) holo.getLine(getLines(p).size() - 1);
-        TouchHandler touchHandler = player -> {
-            onClick(p);
-        };
+        TouchableLine lastLine = (TouchableLine) holo.getLine(getTouchLine(p, holo, getLines(p)));
+        TouchHandler touchHandler = player -> onClick(p);
         holo.setAllowPlaceholders(true);
         lastLine.setTouchHandler(touchHandler);
         VisibilityManager var7 = holo.getVisibilityManager();
@@ -271,8 +269,7 @@ public class FHologram {
             }
         }
         TouchableLine lastLine;
-        int difference = var4.size()-holo.size();
-        lastLine = (TouchableLine) holo.getLine(var4.size()-difference-1);
+        lastLine = (TouchableLine) holo.getLine(getTouchLine(p, holo, var4));
         TouchHandler touchHandler = player -> onClick(p);
         lastLine.setTouchHandler(touchHandler);
     }
@@ -302,6 +299,44 @@ public class FHologram {
 
     private boolean hasBack(Player p){
         return getSection().get(getSelection(p)+".back")!=null;
+    }
+
+    private boolean hasTouchLine(Player p){
+        return getSection().get(getSelection(p)+".touchLine")!=null;
+    }
+
+    private int getTouchLine(Player p, Hologram holo, List<String> lines){
+        int difference = lines.size()-holo.size();
+        int lastLine = lines.size()-difference-1;
+        if (hasTouchLine(p)){
+            String var1 = getSection().getString(getSelection(p)+".touchLine");
+            boolean isInt = Utils.isNumeric(var1);
+            if (isInt){
+                int i = Integer.parseInt(var1)-1;
+                if (i > lines.size() || i<0){
+                    return lastLine;
+                }
+                return i;
+            } else {
+                switch (var1.toLowerCase()){
+                    case "top":{
+                        return 0;
+                    }
+                    case "middle":{
+                        if (lines.size() == 0){
+                            return 0;
+                        }
+                        return lines.size() /2;
+                    }
+                    case "bottom":{
+                        return lastLine;
+                    }
+                }
+            }
+        } else {
+            return lastLine;
+        }
+        return lastLine;
     }
 
     public void executeActions(Player p){
