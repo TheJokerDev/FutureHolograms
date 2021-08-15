@@ -6,6 +6,7 @@ import me.TheJokerDev.futureholograms.holo.HologramsManager;
 import me.TheJokerDev.futureholograms.listeners.LoginListeners;
 import me.TheJokerDev.futureholograms.listeners.WorldListeners;
 import me.TheJokerDev.futureholograms.utils.Utils;
+import me.TheJokerDev.other.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
@@ -17,6 +18,8 @@ import java.util.Arrays;
 public final class Main extends JavaPlugin {
     private static Main plugin;
     private static boolean papiLoaded = true;
+    private static boolean hasUpdate;
+    private String newVersion = "";
 
     @Override
     public void onEnable() {
@@ -59,6 +62,21 @@ public final class Main extends JavaPlugin {
                 "&b&l========================================="
         );
 
+        if (getConfig().getBoolean("update.checkUpdates")) {
+            new UpdateChecker(this, 94642).getVersion(version -> {
+                if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+                    hasUpdate = false;
+                    Main.log(0, "{prefix}&eYou have the latest version of &aFuture&2Holograms!");
+                } else {
+                    hasUpdate = true;
+                    newVersion = version;
+                    Main.log(0, "{prefix}&aThere is a new update available! &bVersion: " + version);
+                    Main.log(0, "{prefix}&7Go to fix / improve this plugin.");
+                    Main.log(0, "{prefix}&ehttps://www.spigotmc.org/resources/futureholograms.94642/");
+                }
+            });
+        }
+
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -69,10 +87,17 @@ public final class Main extends JavaPlugin {
         }.runTask(this);
     }
 
+    public String getNewVersion() {
+        return newVersion;
+    }
+
     public static void listeners(Listener... list){
         Arrays.stream(list).forEach(l-> Bukkit.getPluginManager().registerEvents(l, getPlugin()));
     }
 
+    public static boolean hasUpdate() {
+        return hasUpdate;
+    }
 
     public static void log(int mode, String msg){
         if (mode == 0){

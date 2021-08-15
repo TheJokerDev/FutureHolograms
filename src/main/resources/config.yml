@@ -1,5 +1,9 @@
 prefix: '&7[&a&lFuture&2&lHolograms&7] &8↣ &r'
 
+update:
+  checkUpdates: true
+  remind: true
+
 messages:
   onlyPlayers:
     - '{center}&8&m            &c&l¡  !&8&m            '

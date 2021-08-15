@@ -179,10 +179,18 @@ public class FHologram {
         for (String s : getLines(p)){
             holo.appendTextLine(Utils.ct(PlaceholderAPI.setPlaceholders(p, s)));
         }
-        TouchableLine lastLine = (TouchableLine) holo.getLine(getTouchLine(p, holo, getLines(p)));
-        TouchHandler touchHandler = player -> onClick(p);
+        if (getTouchLine(p, holo, getLines(p)) == 999){
+            for (int i = 0; i<holo.size();i++){
+                TouchableLine lastLine = (TouchableLine) holo.getLine(i);
+                TouchHandler touchHandler = player -> onClick(p);
+                lastLine.setTouchHandler(touchHandler);
+            }
+        } else {
+            TouchableLine lastLine = (TouchableLine) holo.getLine(getTouchLine(p, holo, getLines(p)));
+            TouchHandler touchHandler = player -> onClick(p);
+            lastLine.setTouchHandler(touchHandler);
+        }
         holo.setAllowPlaceholders(true);
-        lastLine.setTouchHandler(touchHandler);
         VisibilityManager var7 = holo.getVisibilityManager();
         var7.setVisibleByDefault(false);
         var7.showTo(p);
@@ -268,10 +276,21 @@ public class FHologram {
                 textLine.setText(Utils.ct(PlaceholderAPI.setPlaceholders(p, var4.get(i))));
             }
         }
-        TouchableLine lastLine;
-        lastLine = (TouchableLine) holo.getLine(getTouchLine(p, holo, var4));
-        TouchHandler touchHandler = player -> onClick(p);
-        lastLine.setTouchHandler(touchHandler);
+        for (int i = 0; i<holo.size();i++){
+            TouchableLine lastLine = (TouchableLine) holo.getLine(i);
+            lastLine.setTouchHandler(null);
+        }
+        if (getTouchLine(p, holo, getLines(p)) == 999){
+            for (int i = 0; i<holo.size();i++){
+                TouchableLine lastLine = (TouchableLine) holo.getLine(i);
+                TouchHandler touchHandler = player -> onClick(p);
+                lastLine.setTouchHandler(touchHandler);
+            }
+        } else {
+            TouchableLine lastLine = (TouchableLine) holo.getLine(getTouchLine(p, holo, getLines(p)));
+            TouchHandler touchHandler = player -> onClick(p);
+            lastLine.setTouchHandler(touchHandler);
+        }
     }
 
     public void onClick(Player p){
@@ -330,6 +349,9 @@ public class FHologram {
                     }
                     case "bottom":{
                         return lastLine;
+                    }
+                    case "all":{
+                        return 999;
                     }
                 }
             }
