@@ -179,17 +179,7 @@ public class FHologram {
         for (String s : getLines(p)){
             holo.appendTextLine(Utils.ct(PlaceholderAPI.setPlaceholders(p, s)));
         }
-        if (getTouchLine(p, holo, getLines(p)) == 999){
-            for (int i = 0; i<holo.size();i++){
-                TouchableLine lastLine = (TouchableLine) holo.getLine(i);
-                TouchHandler touchHandler = player -> onClick(p);
-                lastLine.setTouchHandler(touchHandler);
-            }
-        } else {
-            TouchableLine lastLine = (TouchableLine) holo.getLine(getTouchLine(p, holo, getLines(p)));
-            TouchHandler touchHandler = player -> onClick(p);
-            lastLine.setTouchHandler(touchHandler);
-        }
+        Bukkit.getScheduler().runTask(Main.getPlugin(), () -> updateTouchLine(holo, p));
         holo.setAllowPlaceholders(true);
         VisibilityManager var7 = holo.getVisibilityManager();
         var7.setVisibleByDefault(false);
@@ -276,9 +266,15 @@ public class FHologram {
                 textLine.setText(Utils.ct(PlaceholderAPI.setPlaceholders(p, var4.get(i))));
             }
         }
+        Bukkit.getScheduler().runTask(Main.getPlugin(), () -> updateTouchLine(holo, p));
+    }
+
+    private void updateTouchLine(Hologram holo, Player p){
         for (int i = 0; i<holo.size();i++){
             TouchableLine lastLine = (TouchableLine) holo.getLine(i);
-            lastLine.setTouchHandler(null);
+            if (lastLine.getTouchHandler() != null){
+                lastLine.setTouchHandler(null);
+            }
         }
         if (getTouchLine(p, holo, getLines(p)) == 999){
             for (int i = 0; i<holo.size();i++){
@@ -325,8 +321,7 @@ public class FHologram {
     }
 
     private int getTouchLine(Player p, Hologram holo, List<String> lines){
-        int difference = lines.size()-holo.size();
-        int lastLine = lines.size()-difference-1;
+        int lastLine = holo.size()-1;
         if (hasTouchLine(p)){
             String var1 = getSection().getString(getSelection(p)+".touchLine");
             boolean isInt = Utils.isNumeric(var1);
@@ -363,12 +358,12 @@ public class FHologram {
 
     public void executeActions(Player p){
         for (String s : getActions(p)){
-            boolean isCommand = s.startsWith("[command]") || s.startsWith("[console]");
+            boolean isCommand = s.contains("[command]") || s.contains("[console]");
             boolean isSound = s.startsWith("[sound]");
             boolean isMessage = s.startsWith("[message]");
 
             if (isCommand){
-                boolean isConsole = s.startsWith("[console]");
+                boolean isConsole = s.contains("[console]");
                 s = s.replace("[command]", "").replace("[console]", "");
                 s = PlaceholderAPI.setPlaceholders(p, s);
                 if (isConsole){

@@ -22,6 +22,7 @@ public class FHologramsCmd implements CommandExecutor, TabCompleter {
     }
 
     void loadSubCommands(){
+        subCommands.put("action", new ActionCmd());
         subCommands.put("create", new CreateCmd());
         subCommands.put("reload", new ReloadCmd());
         subCommands.put("delete", new RemoveCmd());
@@ -79,7 +80,15 @@ public class FHologramsCmd implements CommandExecutor, TabCompleter {
         for (String s : help) {
             if (s.equalsIgnoreCase("{cmd}")) {
                 for (SubCommand subcmd : subCommands.values()){
-                    var1.add(subcmd.help().replace("%alias%", label));
+                    if (cmd instanceof Player){
+                        if (!subcmd.console()){
+                            var1.add(subcmd.help().replace("%alias%", label));
+                        }
+                    } else {
+                        if (subcmd.console()){
+                            var1.add(subcmd.help().replace("%alias%", label));
+                        }
+                    }
                 }
             } else {
                 var1.add(s);

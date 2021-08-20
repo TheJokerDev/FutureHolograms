@@ -32,8 +32,7 @@ public class SetLocationCmd implements SubCommand {
                 return true;
             }
             var2.setLocation(p.getLocation());
-            var2.deleteAll();
-            var2.reload();
+            HologramsManager.initHologram(var2);
             Utils.sendMessage(sender, "messages.commands.setlocation.success");
         } else {
             Utils.sendMessage(sender, help());

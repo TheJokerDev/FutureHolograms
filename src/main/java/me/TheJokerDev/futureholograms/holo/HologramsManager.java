@@ -28,6 +28,18 @@ public class HologramsManager {
         }
     }
 
+    public static void initHologram(FHologram holo){
+        String name = holo.getName();
+        if (!hologramHashMap.containsKey(name)){
+            return;
+        }
+        hologramHashMap.get(name).deleteAll();
+        hologramHashMap.remove(name);
+
+        FHologram hologram = new FHologram(name);
+        hologramHashMap.put(name, hologram);
+    }
+
     public static FHologram getHologram(String s){
         return hologramHashMap.getOrDefault(s, null);
     }
