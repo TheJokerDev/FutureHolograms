@@ -1,11 +1,11 @@
 name: FutureHolograms
 version: ${project.version}
 main: me.TheJokerDev.futureholograms.Main
-api-version: 1.16
+api-version: 1.17
 depend: [ PlaceholderAPI, HolographicDisplays ]
 authors: [ TheJokerDev ]
 description: Create custom holograms with uniques options.
-website: https://github.com/TheJokerDev
+website: https://github.com/TheJokerDev/FutureHolograms
 
 commands:
   futureholograms:
