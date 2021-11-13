@@ -11,7 +11,6 @@ import me.TheJokerDev.futureholograms.utils.LocationUtil;
 import me.TheJokerDev.futureholograms.utils.Utils;
 import me.TheJokerDev.other.XSound;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.apache.commons.lang.UnhandledException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -78,7 +77,7 @@ public class FHologram {
                     }
                     onRefresh();
                 }
-            }.runTaskTimer(Main.getPlugin(), 0L, refreshRate);
+            }.runTaskTimerAsynchronously(Main.getPlugin(), 0L, refreshRate);
         }
     }
 
@@ -127,7 +126,12 @@ public class FHologram {
     }
 
     public void showTo(Player p, Player t){
-        holograms.get(p).getVisibilityManager().showTo(t);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                holograms.get(p).getVisibilityManager().showTo(t);
+            }
+        }.runTask(Main.getPlugin());
     }
 
     public boolean hasCooldown(){
@@ -139,11 +143,18 @@ public class FHologram {
     }
 
     public void hideTo(Player p, Player t){
-        holograms.get(p).getVisibilityManager().showTo(t);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                holograms.get(p).getVisibilityManager().hideTo(t);
+            }
+        }.runTask(Main.getPlugin());
     }
 
     public void deleteHologram(Player p){
-        holograms.get(p).clearLines();
+        if (holograms.get(p).size()>0) {
+            holograms.get(p).clearLines();
+        }
         holograms.get(p).delete();
     }
 
@@ -179,11 +190,11 @@ public class FHologram {
         for (String s : getLines(p)){
             holo.appendTextLine(Utils.ct(PlaceholderAPI.setPlaceholders(p, s)));
         }
-        Bukkit.getScheduler().runTask(Main.getPlugin(), () -> updateTouchLine(holo, p));
         holo.setAllowPlaceholders(true);
         VisibilityManager var7 = holo.getVisibilityManager();
         var7.setVisibleByDefault(false);
         var7.showTo(p);
+        updateTouchLine(holo, p);
         holograms.put(p, holo);
     }
 
@@ -266,15 +277,13 @@ public class FHologram {
                 textLine.setText(Utils.ct(PlaceholderAPI.setPlaceholders(p, var4.get(i))));
             }
         }
-        Bukkit.getScheduler().runTask(Main.getPlugin(), () -> updateTouchLine(holo, p));
+        //Bukkit.getScheduler().runTask(Main.getPlugin(), () -> updateTouchLine(holo, p));
     }
 
     private void updateTouchLine(Hologram holo, Player p){
         for (int i = 0; i<holo.size();i++){
-            TouchableLine lastLine = (TouchableLine) holo.getLine(i);
-            if (lastLine.getTouchHandler() != null){
-                lastLine.setTouchHandler(null);
-            }
+            TouchableLine line = (TouchableLine) holo.getLine(i);
+            line.setTouchHandler(null);
         }
         if (getTouchLine(p, holo, getLines(p)) == 999){
             for (int i = 0; i<holo.size();i++){
@@ -300,10 +309,11 @@ public class FHologram {
                     public void run() {
                         cooldown.remove(p.getName());
                     }
-                }.runTaskLater(Main.getPlugin(), getCooldown());
+                }.runTaskLaterAsynchronously(Main.getPlugin(), getCooldown());
             }
         }
         executeActions(p);
+        updateTouchLine(holograms.get(p), p);
         if (p.isSneaking() && hasBack(p)){
             setBack(p);
         } else {

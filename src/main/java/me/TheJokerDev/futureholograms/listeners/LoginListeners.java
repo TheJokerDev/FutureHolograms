@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
@@ -18,21 +19,29 @@ public class LoginListeners implements Listener {
     public void onJoin(PlayerJoinEvent e){
         Player p = e.getPlayer();
 
-        for (FHologram holo : HologramsManager.getHolograms()) {
-            holo.loadPlayer(p);
-            if (holo.getLocation() == null){
-                continue;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (FHologram holo : HologramsManager.getHolograms()) {
+                    holo.loadPlayer(p);
+                    if (holo.getLocation() == null){
+                        continue;
+                    }
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            holo.spawn(p);
+                        }
+                    }.runTask(Main.getPlugin());
+                    if (holo.getLocation().getWorld() == null){
+                        return;
+                    }
+                    if (!holo.getLocation().getWorld().getName().equals(p.getWorld().getName())){
+                        holo.hideTo(p, p);
+                    }
+                }
             }
-            holo.spawn(p);
-            if (holo.getLocation().getWorld() == null){
-                return;
-            }
-            if (holo.getLocation().getWorld().getName().equals(p.getWorld().getName())){
-                holo.showTo(p, p);
-            } else{
-                holo.hideTo(p, p);
-            }
-        }
+        }.runTaskAsynchronously(Main.getPlugin());
 
         if (p.isOp() && p.hasPermission("futureholograms.admin")){
             if (Main.hasUpdate() && Utils.getConfig().getBoolean("update.remind")){

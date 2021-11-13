@@ -18,6 +18,7 @@ import java.util.Arrays;
 public final class Main extends JavaPlugin {
     private static Main plugin;
     private static boolean papiLoaded = true;
+    private long ms;
     private static boolean hasUpdate;
     private String newVersion = "";
 
@@ -25,61 +26,60 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         plugin = this;
-        long ms = System.currentTimeMillis();
-        log(0, "{prefix}&7Loading plugin...");
-        PluginManager pm = getServer().getPluginManager();
-
-        log(0, "{prefix}&7Checking dependencies...");
-        if (!pm.isPluginEnabled("PlaceholderAPI")){
-            log(1, "&cYou need to install PlaceholderAPI to work.");
-            papiLoaded = false;
-            pm.disablePlugin(this);
-            return;
-        } else if (!pm.isPluginEnabled("HolographicDisplays")){
-            log(1, "&cYou need to force install HolographicDisplays to work.");
-            pm.disablePlugin(this);
-            return;
-        }
-        log(0, "{prefix}&aDependencies checked and hooked!");
-
-        log(0, "{prefix}&7Loading commands...");
-        getCommand("futureholograms").setExecutor(new FHologramsCmd());
-        getCommand("futureholograms").setTabCompleter(new FHologramsCmd());
-        log(0, "{prefix}&aCommands loaded!");
-
-        log(0, "{prefix}&7Loading listeners...");
-        listeners(new LoginListeners(), new WorldListeners());
-        log(0, "{prefix}&aListeners loaded sucessfully!");
-
-        ms = System.currentTimeMillis()-ms;
-        Utils.sendMessage(Bukkit.getConsoleSender(),
-                "{prefix}&aPlugin fully loaded and started!",
-                "&b&l=========================================",
-                "&fThanks to use my plugin. Plugin loaded in",
-                "&f"+ms/1000+" seconds.",
-                "",
-                "&a    Made with love, by TheJokerDev &c<3",
-                "&b&l========================================="
-        );
-
-        if (getConfig().getBoolean("update.checkUpdates")) {
-            new UpdateChecker(this, 94642).getVersion(version -> {
-                if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
-                    hasUpdate = false;
-                    Main.log(0, "{prefix}&eYou have the latest version of &aFuture&2Holograms!");
-                } else {
-                    hasUpdate = true;
-                    newVersion = version;
-                    Main.log(0, "{prefix}&aThere is a new update available! &bVersion: " + version);
-                    Main.log(0, "{prefix}&7Go to fix / improve this plugin.");
-                    Main.log(0, "{prefix}&ehttps://www.spigotmc.org/resources/futureholograms.94642/");
-                }
-            });
-        }
-
+        ms = System.currentTimeMillis();
         new BukkitRunnable() {
             @Override
             public void run() {
+                log(0, "{prefix}&7Loading plugin...");
+                PluginManager pm = getServer().getPluginManager();
+
+                log(0, "{prefix}&7Checking dependencies...");
+                if (!pm.isPluginEnabled("PlaceholderAPI")) {
+                    log(1, "&cYou need to install PlaceholderAPI to work.");
+                    papiLoaded = false;
+                    pm.disablePlugin(plugin);
+                    return;
+                } else if (!pm.isPluginEnabled("HolographicDisplays")) {
+                    log(1, "&cYou need to force install HolographicDisplays to work.");
+                    pm.disablePlugin(plugin);
+                    return;
+                }
+                log(0, "{prefix}&aDependencies checked and hooked!");
+
+                log(0, "{prefix}&7Loading commands...");
+                getCommand("futureholograms").setExecutor(new FHologramsCmd());
+                getCommand("futureholograms").setTabCompleter(new FHologramsCmd());
+                log(0, "{prefix}&aCommands loaded!");
+
+                log(0, "{prefix}&7Loading listeners...");
+                listeners(new LoginListeners(), new WorldListeners());
+                log(0, "{prefix}&aListeners loaded sucessfully!");
+
+                long ms = System.currentTimeMillis() - plugin.ms;
+                Utils.sendMessage(Bukkit.getConsoleSender(),
+                        "{prefix}&aPlugin fully loaded and started!",
+                        "&b&l=========================================",
+                        "&fThanks to use my plugin. Plugin loaded in",
+                        "&f" + ms / 1000 + " seconds.",
+                        "",
+                        "&a    Made with love, by TheJokerDev &c<3",
+                        "&b&l========================================="
+                );
+
+                if (getConfig().getBoolean("update.checkUpdates")) {
+                    new UpdateChecker(plugin, 94642).getVersion(version -> {
+                        if (plugin.getDescription().getVersion().equalsIgnoreCase(version)) {
+                            hasUpdate = false;
+                            Main.log(0, "{prefix}&eYou have the latest version of &aFuture&2Holograms!");
+                        } else {
+                            hasUpdate = true;
+                            newVersion = version;
+                            Main.log(0, "{prefix}&aThere is a new update available! &bVersion: " + version);
+                            Main.log(0, "{prefix}&7Go to fix / improve this plugin.");
+                            Main.log(0, "{prefix}&ehttps://www.spigotmc.org/resources/futureholograms.94642/");
+                        }
+                    });
+                }
                 log(0, "{prefix}&7Loading holograms...");
                 HologramsManager.initHolograms();
                 log(0, "{prefix}&aHolograms loaded!");

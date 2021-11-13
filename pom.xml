@@ -6,7 +6,7 @@
 
     <groupId>me.TheJokerDev</groupId>
     <artifactId>FutureHolograms</artifactId>
-    <version>1.0.4.3</version>
+    <version>1.0.4.4</version>
     <packaging>jar</packaging>
 
     <name>FutureHolograms</name>
@@ -83,9 +83,8 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <scope>system</scope>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
-            <systemPath>${user.home}/Google Drive/JavaProjects/IdeaProjects/purpur-1.17.1.jar</systemPath>
+            <scope>provided</scope>
+            <version>1.16.4-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
