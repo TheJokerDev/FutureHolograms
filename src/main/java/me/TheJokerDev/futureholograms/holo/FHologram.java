@@ -129,6 +129,9 @@ public class FHologram {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (holograms.get(p) == null){
+                    return;
+                }
                 holograms.get(p).getVisibilityManager().showTo(t);
             }
         }.runTask(Main.getPlugin());
@@ -146,6 +149,9 @@ public class FHologram {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (holograms.get(p) == null){
+                    return;
+                }
                 holograms.get(p).getVisibilityManager().hideTo(t);
             }
         }.runTask(Main.getPlugin());
