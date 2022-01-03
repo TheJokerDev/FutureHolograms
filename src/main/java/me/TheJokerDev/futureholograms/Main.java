@@ -1,12 +1,13 @@
 package me.TheJokerDev.futureholograms;
 
+import lombok.Getter;
 import me.TheJokerDev.futureholograms.commands.FHologramsCmd;
-import me.TheJokerDev.futureholograms.holo.FHologram;
 import me.TheJokerDev.futureholograms.holo.HologramsManager;
 import me.TheJokerDev.futureholograms.listeners.LoginListeners;
 import me.TheJokerDev.futureholograms.listeners.WorldListeners;
 import me.TheJokerDev.futureholograms.utils.Utils;
 import me.TheJokerDev.other.UpdateChecker;
+import me.TheJokerDev.other.nms.NMS;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
@@ -15,12 +16,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 
+@Getter
 public final class Main extends JavaPlugin {
     private static Main plugin;
     private static boolean papiLoaded = true;
     private long ms;
     private static boolean hasUpdate;
     private String newVersion = "";
+    public static HologramsManager manager;
+    private static NMS nms;
 
     @Override
     public void onEnable() {
@@ -44,6 +48,9 @@ public final class Main extends JavaPlugin {
                     pm.disablePlugin(plugin);
                     return;
                 }
+                manager = new HologramsManager();
+                NMS.init();
+                nms = NMS.getInstance();
                 log(0, "{prefix}&aDependencies checked and hooked!");
 
                 log(0, "{prefix}&7Loading commands...");
@@ -81,7 +88,7 @@ public final class Main extends JavaPlugin {
                     });
                 }
                 log(0, "{prefix}&7Loading holograms...");
-                HologramsManager.initHolograms();
+                manager.init();
                 log(0, "{prefix}&aHolograms loaded!");
             }
         }.runTask(this);
@@ -93,6 +100,10 @@ public final class Main extends JavaPlugin {
 
     public static void listeners(Listener... list){
         Arrays.stream(list).forEach(l-> Bukkit.getPluginManager().registerEvents(l, getPlugin()));
+    }
+
+    public static HologramsManager getManager() {
+        return manager;
     }
 
     public static boolean hasUpdate() {

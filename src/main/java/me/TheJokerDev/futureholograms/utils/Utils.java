@@ -3,12 +3,14 @@ package me.TheJokerDev.futureholograms.utils;
 import me.TheJokerDev.futureholograms.Main;
 import me.TheJokerDev.other.DefaultFontInfo;
 import me.TheJokerDev.other.FileConfigurationUtil;
+import me.TheJokerDev.other.XSound;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import javax.xml.bind.annotation.XmlSchema;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -171,5 +173,20 @@ public class Utils {
             compensated += spaceLength;
         }
         return sb + message;
+    }
+
+    public void executeSound(Player p, String id){
+        String[] split = id.split(",");
+        XSound sound;
+        try {
+            sound = XSound.valueOf(split[0].toUpperCase());
+        } catch (IllegalArgumentException e) {
+            Main.log(2, "Sound: "+split[0]+" doesn't exist!");
+            return;
+        }
+        float volume = Float.parseFloat(split[1]);
+        float pitch = Float.parseFloat(split[2]);
+
+        sound.play(p, volume, pitch);
     }
 }
